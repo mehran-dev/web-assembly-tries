@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Auto WASM</title>
+  </head>
+  <body>
+    <h2>Page Loaded...</h2>
+
+    <script src="dom2.js"></script>
+
+    <script>
+      Module.onRuntimeInitialized = () => {
+        Module._init();
+      };
+    </script>
+  </body>
+</html>

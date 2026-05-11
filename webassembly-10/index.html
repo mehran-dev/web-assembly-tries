@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WASM Test</title>
+  </head>
+  <body>
+    <h1>WebAssembly Hello</h1>
+
+    <script>
+      async function run() {
+        const response = await fetch("hello.wasm");
+
+        const bytes = await response.arrayBuffer();
+
+        const wasm = await WebAssembly.instantiate(bytes);
+
+        const result = wasm.instance.exports.hello();
+
+        console.log("WASM RESULT:", result);
+      }
+
+      run();
+    </script>
+  </body>
+</html>

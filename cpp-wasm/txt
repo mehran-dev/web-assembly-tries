@@ -1,0 +1,26 @@
+emcc add.cpp \
+-s WASM=1 \
+-s EXPORTED_FUNCTIONS='["_add"]' \
+-o add.js
+
+
+
+/home/mehransaghebifard/Desktop/g-wasm/emsdk-main/upstream/emscripten/emcc add.cpp \
+-s WASM=1 \
+-s EXPORTED_FUNCTIONS='["_add"]' \
+-o add.js
+
+
+
+
+/home/mehransaghebifard/Desktop/g-wasm/emsdk-main/upstream/emscripten/emcc dom.cpp \
+-s WASM=1 \
+-s EXPORTED_FUNCTIONS='["_changeText"]' \
+-o dom.js
+
+
+
+/home/mehransaghebifard/Desktop/g-wasm/emsdk-main/upstream/emscripten/emcc  dom2.cpp \
+-s WASM=1 \
+-s EXPORTED_FUNCTIONS='["_init"]' \
+-o dom2.js

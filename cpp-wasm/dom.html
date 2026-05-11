@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DOM WASM</title>
+  </head>
+  <body>
+    <h1 id="title">Hello World</h1>
+
+    <button onclick="run()">Change Text</button>
+
+    <script src="dom.js"></script>
+
+    <script>
+      function run() {
+        Module._changeText();
+      }
+    </script>
+  </body>
+</html>

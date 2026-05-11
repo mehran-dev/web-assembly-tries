@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>C++ WASM</title>
+</head>
+<body>
+
+<h1>C++ WebAssembly</h1>
+
+<script src="add.js"></script>
+
+<script>
+
+Module.onRuntimeInitialized = () => {
+
+  const result = Module._add(10, 20);
+
+  console.log("RESULT:", result);
+
+};
+
+</script>
+
+</body>
+</html>

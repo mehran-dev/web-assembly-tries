@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WASM Game</title>
+  </head>
+  <body>
+    <h1>🎮 Guess The Number</h1>
+
+    <p>Guess a number between 1 and 10</p>
+
+    <input id="number" type="number" />
+
+    <button onclick="play()">Guess</button>
+
+    <h2 id="result"></h2>
+
+    <script>
+      let wasm;
+
+      async function init() {
+        const response = await fetch("game.wasm");
+
+        const bytes = await response.arrayBuffer();
+
+        wasm = await WebAssembly.instantiate(bytes);
+      }
+
+      async function play() {
+        const value = Number(document.getElementById("number").value);
+
+        const result = wasm.instance.exports.check(value);
+
+        const output = document.getElementById("result");
+
+        if (result === 0) {
+          output.innerText = "✅ Correct!";
+        } else if (result === -1) {
+          output.innerText = "⬆️ Bigger";
+        } else {
+          output.innerText = "⬇️ Smaller";
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>
