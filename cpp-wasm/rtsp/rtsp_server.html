@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>RTSP Stream</title>
+  </head>
+  <body>
+    <h1>RTSP Stream</h1>
+
+    <canvas id="videoCanvas"></canvas>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmpeg/0.2/jsmpg.min.js"></script> -->
+    <script src="./jsmpg.min.js"></script>
+
+    <script>
+      console.log("JSMpeg =", window.JSMpeg);
+
+      if (!window.JSMpeg) {
+        throw new Error("JSMpeg failed to load");
+      }
+
+      const canvas = document.getElementById("videoCanvas");
+
+      const player = new JSMpeg.Player("ws://localhost:9999", {
+        canvas: canvas,
+      });
+    </script>
+  </body>
+</html>

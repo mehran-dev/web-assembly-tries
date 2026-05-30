@@ -1,0 +1,5 @@
+/home/mehransaghebifard/Desktop/g-wasm/emsdk-main/upstream/emscripten/emcc face.cpp \
+-s WASM=1 \
+-s EXPORTED_FUNCTIONS='["_detect"]' \
+-s EXPORTED_RUNTIME_METHODS='["cwrap","HEAPU8"]' \
+-o face.js

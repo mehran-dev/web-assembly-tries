@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>WASM Video Filter</title>
+  </head>
+  <body>
+    <h2>WASM Grayscale Video</h2>
+
+    <input type="file" id="fileInput" accept="video/*" />
+
+    <br /><br />
+
+    <video id="video" controls width="500"></video>
+
+    <br /><br />
+
+    <canvas id="canvas"></canvas>
+
+    <br /><br />
+
+    <canvas id="wave" width="800" height="150"></canvas>
+
+    <script src="./grayscale.js"></script>
+
+    <script>
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const waveCanvas = document.getElementById("wave");
+      const waveCtx = waveCanvas.getContext("2d");
+
+      const input = document.getElementById("fileInput");
+
+      let audioContext;
+      let analyser;
+
+      input.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+
+        const url = URL.createObjectURL(file);
+
+        video.src = url;
+
+        await video.play();
+
+        setupAudio();
+
+        render();
+      });
+
+      function setupAudio() {
+        audioContext = new AudioContext();
+
+        const source = audioContext.createMediaElementSource(video);
+
+        analyser = audioContext.createAnalyser();
+
+        source.connect(analyser);
+
+        analyser.connect(audioContext.destination);
+
+        analyser.fftSize = 2048;
+      }
+
+      function drawWaveform() {
+        const bufferLength = analyser.frequencyBinCount;
+
+        const dataArray = new Uint8Array(bufferLength);
+
+        analyser.getByteTimeDomainData(dataArray);
+
+        waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+
+        waveCtx.beginPath();
+
+        const sliceWidth = waveCanvas.width / bufferLength;
+
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+          const v = dataArray[i] / 128.0;
+
+          const y = (v * waveCanvas.height) / 2;
+
+          if (i === 0) {
+            waveCtx.moveTo(x, y);
+          } else {
+            waveCtx.lineTo(x, y);
+          }
+
+          x += sliceWidth;
+        }
+
+        waveCtx.stroke();
+      }
+
+      function render() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        ctx.drawImage(video, 0, 0);
+
+        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        const data = imageData.data;
+
+        const ptr = Module._malloc(data.length);
+
+        Module.HEAPU8.set(data, ptr);
+
+        Module._grayscale(ptr, data.length);
+
+        const result = Module.HEAPU8.subarray(ptr, ptr + data.length);
+
+        imageData.data.set(result);
+
+        ctx.putImageData(imageData, 0, 0);
+
+        Module._free(ptr);
+
+        drawWaveform();
+
+        requestAnimationFrame(render);
+      }
+    </script>
+    <script src="./audio.js"></script>
+
+    <script>
+      const audioCtx = new AudioContext();
+
+      const analyser = audioCtx.createAnalyser();
+
+      const source = audioCtx.createMediaElementSource(video);
+
+      source.connect(analyser);
+
+      analyser.connect(audioCtx.destination);
+
+      analyser.fftSize = 1024;
+
+      const samples = new Float32Array(analyser.fftSize);
+
+      function renderWave() {
+        analyser.getFloatTimeDomainData(samples);
+
+        const ptr = Module._malloc(samples.length * 4);
+
+        Module.HEAPF32.set(samples, ptr / 4);
+
+        const peak = Module._getPeak(ptr, samples.length);
+
+        Module._free(ptr);
+
+        waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+
+        const height = peak * waveCanvas.height;
+
+        waveCtx.fillRect(100, waveCanvas.height - height, 100, height);
+
+        requestAnimationFrame(renderWave);
+      }
+    </script>
+  </body>
+</html>

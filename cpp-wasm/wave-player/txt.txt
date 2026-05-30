@@ -1,0 +1,13 @@
+/home/mehransaghebifard/Desktop/g-wasm/emsdk-main/upstream/emscripten/emcc grayscale.cpp \
+-s WASM=1 \
+-s EXPORTED_FUNCTIONS='["_grayscale","_malloc","_free"]' \
+-s EXPORTED_RUNTIME_METHODS='["HEAPU8"]' \
+-o grayscale.js
+
+
+
+/home/mehransaghebifard/Desktop/g-wasm/emsdk-main/upstream/emscripten/emcc audio.cpp \
+-s WASM=1 \
+-s EXPORTED_FUNCTIONS='["_getPeak","_malloc","_free"]' \
+-s EXPORTED_RUNTIME_METHODS='["HEAPF32"]' \
+-o audio.js
